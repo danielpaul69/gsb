@@ -22,7 +22,7 @@ require 'includes/header.php';
 </div>
 
 <?php
-        session_start();
+    session_start();
 
 if (
     isset($_POST['identifiant']) && 
@@ -30,8 +30,6 @@ if (
     !empty($_POST['identifiant']) &&
     !empty($_POST['motDePasse'])
     ) {
-    var_dump($_POST);
-
     $sql = 'SELECT * FROM `utilisateur` WHERE identifiant = :identifiant AND motDePasse = :motDePasse';
     $requete = $bdd->prepare($sql);
     $requete->bindParam(":identifiant", $_POST['identifiant']);
@@ -40,7 +38,12 @@ if (
     $resultats = $requete->fetchAll();
 
     if (!empty($resultats)) {
-        header('location: index.php');
+        $_SESSION['utilisateur'] = $resultats[0];
+        if ($resultats[0]['roleId'] == 3) {
+            header('location: utilisateurs/liste.php');
+        }else{
+            header('location: index.php');
+        }
     }
 }
 
